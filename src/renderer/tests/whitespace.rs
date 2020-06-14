@@ -17,7 +17,7 @@ fn can_remove_whitespace_basic() {
         ("  {%- if false -%}\n {{numbers}}\n {% elif false -%} Nope {% else %} else {%- endif -%} ", " else"),
         ("  {%- set var = 2 -%} {{var}}", "2"),
         ("  {% set var = 2 -%} {{var}}", "  2"),
-        ("  {% raw -%}{{2}} {% endraw -%} ", "  {{2}}"),
+        (" {% raw -%} {{2}} {% endraw -%} ", " {{2}} "),
         ("  {% filter upper -%} hey {%- endfilter -%} ", "  HEY"),
         ("  {{ \"hello\" -}} ", "  hello"),
         ("  {{- \"hello\" }} ", "hello "),
@@ -103,12 +103,11 @@ fn works_with_filter_section() {
     assert_eq!(res, "  C   D");
 }
 
-
 #[test]
-fn make_sure_not_to_deleting_whitespaces() {
+fn make_sure_not_to_delete_whitespaces() {
     let mut context = Context::new();
     context.insert("d", "d");
     let input = r#"{% raw %}    yaml_test:     {% endraw %}"#;
     let res = Tera::one_off(input, &context, true).unwrap();
-    assert_eq!(res, "    yaml_test:    ");
+    assert_eq!(res, "    yaml_test:     ");
 }
